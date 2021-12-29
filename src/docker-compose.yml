@@ -1,0 +1,32 @@
+version: '3.7'
+volumes:
+  mongo_vol:
+networks:
+  net_potatoes:
+    driver: bridge
+services:
+  rotten-potatoes:
+    image: rpfreitas111/rotten-potatoes:${TAG}
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    ports:
+      - 5000:5000
+    networks:
+      - net_potatoes
+    environment:
+      MONGODB_HOST: mongodb
+      MONGO_DB: admin
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo:5
+    ports:
+      - 27017:27017
+    networks:
+      - net_potatoes
+    volumes:
+      - mongo_vol:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongouser
+      MONGO_INITDB_ROOT_PASSWORD: mongopwd
